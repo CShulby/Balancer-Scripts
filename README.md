@@ -1,6 +1,6 @@
-This is the Triphone Balancer built by Christopher Shulby
+This is the Triphone Balancer built by Christopher Shulby for his PhD Thesis
 
-Date: 01.12.2014
+Original Date: 01/12/2014
 
 
 ----Introduction-----
