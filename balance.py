@@ -26,7 +26,7 @@ def menu():
 	print '\n' + "	you entered", var + '\n'
 	if var == "help":
 		help= True
-		print "Two arguments expected: " +'\n\n'+ "1. current_corpus_file (This file should contain two columns separated by a \"|\", the first should sentences (orthography), and second should contain the corresponding phonetic transcription, for example \"Programe sua viagem|pp rd oo gg rd an mm ic ss uu ac vv ic aa zh en\", one sentence per line" + '\n' + "2. candidate_corpus_file (This file should contain two columns separated by a \"|\", the first should sentences (orthography), and second should contain the corresponding phonetic transcription, for example \"Programe sua viagem|pp rd oo gg rd an mm ic ss uu ac vv ic aa zh en\", one sentence per line" + '\n' +'\n\n' 
+		print "Three arguments expected: " +'\n\n'+ "1. current_corpus_file (This file should contain two columns separated by a \"|\", the first should sentences (orthography), and second should contain the corresponding phonetic transcription, for example \"Programe sua viagem|pp rd oo gg rd an mm ic ss uu ac vv ic aa zh en\", one sentence per line" + '\n' + "2. candidate_corpus_file (This file should contain two columns separated by a \"|\", the first should sentences (orthography), and second should contain the corresponding phonetic transcription, for example \"Programe sua viagem|pp rd oo gg rd an mm ic ss uu ac vv ic aa zh en\", one sentence per line" + '\n'+ "3. <tmp_folder_name>" +  '\n\n' 
 	
 	if not help:
 		current_corpus_file= var
@@ -208,9 +208,11 @@ def weight_sents(triphones_sentences, current_weights, saldo):
 			if added_weight > 0.0000000000000000000000000000001:
 				weighted_sent = str(added_weight) + "|" + sentence + "|" + transcription
 				weighted_sents_.append(weighted_sent)
-
-	for x in sorted(weighted_sents_ , reverse=True):
+	
+	for x in sorted(weighted_sents_, key=lambda x: -float(x.split('|')[0])):
 		weighted_sents.append(x)
+	
+	#print weighted_sents[1:10]
 
 #	print "time: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
@@ -233,6 +235,7 @@ def weight_sents(triphones_sentences, current_weights, saldo):
 		print "\n------------------------\nCorpus has: " + str(len(weighted_sents)) + " sentences \n------------------------\n\n"
 		num_sents = raw_input('\n' + "please enter the number of sentences you would like to see: " + '\n')
 		if int(num_sents) >= 0 and int(num_sents) < len(weighted_sents):
+			print "here_a"
 			valid_total = True
 			sents_to_print = '\n'.join(weighted_sents[:int(num_sents)])
 			count = 0
