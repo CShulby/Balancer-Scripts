@@ -209,7 +209,7 @@ def weight_sents(triphones_sentences, current_weights, saldo):
 				weighted_sent = str(added_weight) + "|" + sentence + "|" + transcription
 				weighted_sents_.append(weighted_sent)
 
-	for x in sorted(weighted_sents_ , reverse=True):
+	for x in sorted(weighted_sents_, key=lambda x: -float(x.split('|')[0])):
 		weighted_sents.append(x)
 
 #	print "time: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
