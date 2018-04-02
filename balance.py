@@ -235,7 +235,7 @@ def weight_sents(triphones_sentences, current_weights, saldo):
 		print "\n------------------------\nCorpus has: " + str(len(weighted_sents)) + " sentences \n------------------------\n\n"
 		num_sents = raw_input('\n' + "please enter the number of sentences you would like to see: " + '\n')
 		if int(num_sents) >= 0 and int(num_sents) < len(weighted_sents):
-			print "here_a"
+			
 			valid_total = True
 			sents_to_print = '\n'.join(weighted_sents[:int(num_sents)])
 			count = 0
