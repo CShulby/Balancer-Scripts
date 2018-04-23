@@ -230,65 +230,54 @@ def weight_sents(triphones_sentences, current_weights, saldo):
 #########################################start manual balacing
 
 
-	valid_total = False
-	while not valid_total:
-		print "\n------------------------\nCorpus has: " + str(len(weighted_sents)) + " sentences \n------------------------\n\n"
-		num_sents = raw_input('\n' + "please enter the number of sentences you would like to see: " + '\n')
-		if int(num_sents) >= 0 and int(num_sents) < len(weighted_sents):
-			
-			valid_total = True
-			sents_to_print = '\n'.join(weighted_sents[:int(num_sents)])
-			count = 0
-			print '\n\n' + '-----------------------    -----------------------------------------' + '\n'
-			for h in range(0,int(num_sents)):
-				print str(count).ljust(8) + str(weighted_sents[h].strip().split('|')[0]).ljust(20) + weighted_sents[h].strip().split('|')[1]
-				count = count + 1
-			print '\n' + '-----------------------    -----------------------------------------' + '\n\n'
-			valid_0 = False
-			while not valid_0:
-				selected_sent = raw_input('\n' + "please select a NUMBER of a sentence you would like to accept or exclude: " + '\n')
-				if int(selected_sent) >= 0 and int(selected_sent) < int(num_sents):
-					valid_0 = True
-					valid = False
-					while not valid:
-						choice = raw_input('\n' + "1) (a)ccept or 2) (e)xclude? " + '\n')
-						accept = set(['a','1', ''])
-						exclude = set(['e','2'])
-						if choice == 'a':
-							print "Sentence number " + str(selected_sent) + " accepted \n\n"
-							accepted_sent = str(weighted_sents[int(selected_sent)]).strip().split('|')[1]+"|"+str(weighted_sents[int(selected_sent)]).strip().split('|')[2]
-							#print ">>>>>>>>>>>>>>>>>>>>>>" + accepted_sent
-							sentences.append(accepted_sent)
-							added_weight = float(str(weighted_sents[int(selected_sent)]).strip().split('|')[0])
-							added_weights.append(added_weight)	
-							for i in range(0,len(weighted_sents)):
-								if i != int(selected_sent):
-									sent=weighted_sents[i].strip().split('|')[1] +"|"+weighted_sents[i].strip().split('|')[2]
-									sentences.append(sent)
-									added_weight = float(weighted_sents[i].strip().split('|')[0])
-									added_weights.append(added_weight)
-									valid = True
+	print "\n------------------------\nCorpus has: " + str(len(weighted_sents)) + " sentences \n------------------------\n\n"
+	num_sents = ''
+	while not num_sents.isdigit() or int(num_sents) <= 0 or int(num_sents) > len(weighted_sents):
+		num_sents = raw_input('\n' + "Please enter the number of sentences you would like to see (1 to " + str(len(weighted_sents)) + "): " + '\n')
+	num_sents = int(num_sents)
 
-						elif choice == 'e' :
-							print "Sentence number " + str(selected_sent) + " excluded \n\n"
-							sentences.append("excluded_sent|## ## ##")
-							for i in range(0,len(weighted_sents)):
-								if i != int(selected_sent):
-									sent=weighted_sents[i].strip().split('|')[1] +"|"+weighted_sents[i].strip().split('|')[2]
-									sentences.append(sent)
-									added_weight = float(weighted_sents[i].strip().split('|')[0])
-									added_weights.append(added_weight)
-									valid = True
+	sents_to_print = '\n'.join(weighted_sents[:num_sents])
+	count = 0
+	print '\n\n' + '-----------------------    -----------------------------------------' + '\n'
+	for h in range(0,num_sents):
+		print str(count).ljust(8) + str(weighted_sents[h].strip().split('|')[0]).ljust(20) + weighted_sents[h].strip().split('|')[1]
+		count = count + 1
+	print '\n' + '-----------------------    -----------------------------------------' + '\n\n'
+	selected_sent = ''
+	while not selected_sent.isdigit() or int(selected_sent) < 0 or int(selected_sent) >= num_sents:
+		selected_sent = raw_input('\n' + "Please select a number of the sentence you would like to accept or exclude (0 to " + str(num_sents-1) + "): " + '\n')
+	selected_sent = int(selected_sent)
+	valid = False
+	while not valid:
+		choice = raw_input('\n' + "1) (a)ccept or 2) (e)xclude? " + '\n')
+		if choice in ['a', '1']:
+			print "Sentence number " + str(selected_sent) + " accepted \n\n"
+			accepted_sent = str(weighted_sents[int(selected_sent)]).strip().split('|')[1]+"|"+str(weighted_sents[int(selected_sent)]).strip().split('|')[2]
+			#print ">>>>>>>>>>>>>>>>>>>>>>" + accepted_sent
+			sentences.append(accepted_sent)
+			added_weight = float(str(weighted_sents[int(selected_sent)]).strip().split('|')[0])
+			added_weights.append(added_weight)	
+			for i in range(0,len(weighted_sents)):
+				if i != int(selected_sent):
+					sent=weighted_sents[i].strip().split('|')[1] +"|"+weighted_sents[i].strip().split('|')[2]
+					sentences.append(sent)
+					added_weight = float(weighted_sents[i].strip().split('|')[0])
+					added_weights.append(added_weight)
+					valid = True
 
-						else:
-							print "not a valid choice... "
-							valid = False
-				else:
-					"sentence number not valid\n\nplease enter a valid number\n"
-					valid_0 = False
+		elif choice in ['e', '2']:
+			print "Sentence number " + str(selected_sent) + " excluded \n\n"
+			sentences.append("excluded_sent|## ## ##")
+			for i in range(0,len(weighted_sents)):
+				if i != int(selected_sent):
+					sent=weighted_sents[i].strip().split('|')[1] +"|"+weighted_sents[i].strip().split('|')[2]
+					sentences.append(sent)
+					added_weight = float(weighted_sents[i].strip().split('|')[0])
+					added_weights.append(added_weight)
+					valid = True
+
 		else:
-			"not a valid number for the size of this corpus\n\nplease enter a valid number\n"
-			valid_total = False
+			print "not a valid choice... \n"
 
 	return added_weights, sentences
 
@@ -331,16 +320,17 @@ def processBalancing(current_corpus, big_corpus, foldername):
 		print "Three arguments expected: " +'\n\n'+ "1. current_corpus_file (This file should contain two columns separated by a \"|\", the first should sentences (orthography), and second should contain the corresponding phonetic transcription, for example \"Programe sua viagem|pp rd oo gg rd an mm ic ss uu ac vv ic aa zh en\", one sentence per line" + '\n' + "2. candidate_corpus_file (This file should contain two columns separated by a \"|\", the first should sentences (orthography), and second should contain the corresponding phonetic transcription, for example \"Programe sua viagem|pp rd oo gg rd an mm ic ss uu ac vv ic aa zh en\", one sentence per line" + '\n' +"3. A folder to save the files, you can name it anything you would like, <folder_a> for example." +'\n\n' 
 	else:
 		#print "Iteration number: " + str(loop) + '\n'	
-		copy_input()
-		qtd_rels = get_percents_big()
+		copy_input() # pra dentro de Files
+		qtd_rels = get_percents_big() # pega as quantidades que tao no arquivo ../hist_big_orig -- que pode ter qquer coisa
 		while loop < 4001: 
 			print "Iteration number: " + str(loop) + '\n'
 			print "time: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 			triphones, triphones_sentences = order_triphones('Files/current_corpus_file')
-			make_orig_hists(triphones)
-			reordena_hists()
-			current_weights, saldo = get_percents_small(qtd_rels)
-			triphones, triphones_sentences = order_triphones('Files/candidate_corpus_file')
+			make_orig_hists(triphones) # escreve do Files/current_corpus pro tmp/hist_small_orig
+			reordena_hists() # tmp/hist_small_ord  <-- primeira coluna do tmp/hist_small_orig        e segunda coluna do ../hist_big_orig
+					 # tmp/saldo_small_ord <-- 1.01 - primeira coluna do tmp/hist_small_orig e segunda coluna do ../hist_big_orig
+			current_weights, saldo = get_percents_small(qtd_rels) # log(../hist_big_orig[i]) - tmp/hist_small_ord[X] , temp/saldo_small_ord
+			triphones, triphones_sentences = order_triphones('Files/candidate_corpus_file') 
 			weights, sentences = weight_sents(triphones_sentences, current_weights, saldo)
 			richest(weights, sentences)
 			loop = loop +1
