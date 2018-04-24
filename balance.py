@@ -250,21 +250,22 @@ def processBalancing(current_corpus, big_corpus, automode):
             richest(weights, sentences)
             loop = loop +1
             #print "time: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        except:
-            print "Abnormal behaviour..."
+
+        except RuntimeError as err:
+            print (err.args)
             shutil.copy('Files/candidate_corpus_file' , '../' + candidateCorpus)
             shutil.copy('Files/current_corpus_file' , '../' + currentCorpus)
             shutil.copy('Files/excluded_sentences_file' , '../' + excluded_sentences_file)
             sys.exit(1)
-
+        except:
+            print "Abnormal behaviour..."
     if loop == loop_parameter:
             #print "end time: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             print "exiting... "
             exit
 
 def signal_handler(signal, frame):
-    print "Exit with CTRL+C pressed!"
-    sys.exit(1)
+    raise RuntimeError('Exit with CTRL+C pressed!')
 
 
 if __name__ == "__main__":
