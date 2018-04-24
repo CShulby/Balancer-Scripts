@@ -123,7 +123,7 @@ def weight_sents(triphones_sentences, current_weights, saldo, isAutoMode):
 
             elif choice in ['e', '2']:
                 print "Sentence number " + str(selected_sent) + " excluded \n\n"
-                excluded_sent = str(weighted_sents[int(selected_sent)]).strip().split('|')[1]
+                excluded_sent = str(weighted_sents[int(selected_sent)]).strip()
                 sentences.append("excluded_sent|"+excluded_sent)
                 for i in range(0,len(weighted_sents)):
                     if i != int(selected_sent):

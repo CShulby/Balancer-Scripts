@@ -174,7 +174,7 @@ def richest(weights, sentences):
         if "excluded_sent" not in "\n".join(sentences[:1]):
             f1.write("\n".join(sentences[:1]) +'\n')
         else:
-            f_x.write("\n".join(sentences[:22]) +'\n')
+            f_x.write("\n".join(sentences[:1]) +'\n')
 
     with open('Files/new_corpus_file', 'a') as f1:
         if "excluded_sent" not in "\n".join(sentences[:1]):
