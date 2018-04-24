@@ -42,9 +42,9 @@ def copy_input(curCorpus,bigCorpus,excludedSentencesFile):
     current_corpus_file = curCorpus
     candidate_corpus_file = bigCorpus
     excluded_sentences_file = excludedSentencesFile
-    shutil.copy('../' + current_corpus_file, 'Files/current_corpus_file')
-    shutil.copy('../' + candidate_corpus_file, 'Files/candidate_corpus_file')
-    shutil.copy('../' + excluded_sentences_file, 'Files/excluded_sentences_file')
+    shutil.copy(current_corpus_file, 'temp/Files/current_corpus_file')
+    shutil.copy(candidate_corpus_file, 'temp/Files/candidate_corpus_file')
+    shutil.copy(excluded_sentences_file, 'temp/Files/excluded_sentences_file')
 
 def order_triphones(file_name):
     #print "grouping monophones to triphones in each sentence... "
@@ -217,16 +217,15 @@ def processBalancing(current_corpus, big_corpus, automode):
     current_corpus_path = current_corpus.split("/")
     length_current_corpus_path = len(current_corpus_path)
     excluded_sentences_file = ""
+
     if (length_current_corpus_path == 1):
         if not os.path.exists("./excluded_sentences_file"):
-            print "create excluded files"
             os.mknod("./excluded_sentences_file")
         excluded_sentences_file="excluded_sentences_file"
     else:
-        excluded_sentences_path = ''.join(current_corpus_path[:length_current_corpus_path-1])
+        excluded_sentences_path = '/'.join(current_corpus_path[:length_current_corpus_path-1])
         excluded_sentences_file = excluded_sentences_path + "/excluded_sentences_file"
         if not os.path.exists(excluded_sentences_file):
-            print "create excluded files"
             os.mknod(excluded_sentences_file)
 
     temp_path = current_path+"/temp"
@@ -235,7 +234,9 @@ def processBalancing(current_corpus, big_corpus, automode):
     os.chdir(temp_path)
     makedirs()
     #print "Iteration number: " + str(loop) + '\n'
+    os.chdir(current_path)
     copy_input(current_corpus, big_corpus, excluded_sentences_file)
+    os.chdir(temp_path)
     qtd_rels = get_percents_big()
     while loop < loop_parameter:
         try:
@@ -252,16 +253,18 @@ def processBalancing(current_corpus, big_corpus, automode):
             #print "time: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         except RuntimeError as err:
-            print (err.args)
-            shutil.copy('Files/candidate_corpus_file' , '../' + candidateCorpus)
-            shutil.copy('Files/current_corpus_file' , '../' + currentCorpus)
-            shutil.copy('Files/excluded_sentences_file' , '../' + excluded_sentences_file)
+            print (err)
+            os.chdir(current_path)
+            shutil.copy('temp/Files/candidate_corpus_file' , candidateCorpus)
+            shutil.copy('temp/Files/current_corpus_file' , currentCorpus)
+            shutil.copy('temp/Files/excluded_sentences_file' , excluded_sentences_file)
             sys.exit(1)
         except:
             print "Abnormal behaviour..."
-            shutil.copy('Files/candidate_corpus_file' , '../' + candidateCorpus)
-            shutil.copy('Files/current_corpus_file' , '../' + currentCorpus)
-            shutil.copy('Files/excluded_sentences_file' , '../' + excluded_sentences_file)
+            os.chdir(current_path)
+            shutil.copy('temp/Files/candidate_corpus_file' , candidateCorpus)
+            shutil.copy('temp/Files/current_corpus_file' , currentCorpus)
+            shutil.copy('temp/Files/excluded_sentences_file' , excluded_sentences_file)
             sys.exit(1)
     if loop == loop_parameter:
             #print "end time: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -269,7 +272,7 @@ def processBalancing(current_corpus, big_corpus, automode):
             exit
 
 def signal_handler(signal, frame):
-    raise RuntimeError('Exit with CTRL+C pressed...')
+    raise RuntimeError(' Exit with CTRL+C pressed...')
 
 
 if __name__ == "__main__":
