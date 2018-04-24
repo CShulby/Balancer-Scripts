@@ -13,12 +13,13 @@ import marisa_trie
 import time
 import math
 import argparse
+import signal
 import internal_balancer
 
 def makedirs():
     #print "making dirs if they don't already exist... "
-    cmd="mkdir -p ./Files; mkdir -p ./tmp"                                                                       
-    p=subprocess.Popen(cmd,   shell=True, stdout=subprocess.PIPE)                              
+    cmd="mkdir -p ./Files; mkdir -p ./tmp"
+    p=subprocess.Popen(cmd,   shell=True, stdout=subprocess.PIPE)
     output, errors = p.communicate()
 
 
@@ -28,8 +29,8 @@ def menu():
     print '\n' + "    you entered", var + '\n'
     if var == "help":
         help= True
-        print "Three arguments expected: " +'\n\n'+ "1. current_corpus_file (This file should contain two columns separated by a \"|\", the first should sentences (orthography), and second should contain the corresponding phonetic transcription, for example \"Programe sua viagem|pp rd oo gg rd an mm ic ss uu ac vv ic aa zh en\", one sentence per line" + '\n' + "2. candidate_corpus_file (This file should contain two columns separated by a \"|\", the first should sentences (orthography), and second should contain the corresponding phonetic transcription, for example \"Programe sua viagem|pp rd oo gg rd an mm ic ss uu ac vv ic aa zh en\", one sentence per line" + '\n'+ "3. <tmp_folder_name>" +  '\n\n' 
-    
+        print "Three arguments expected: " +'\n\n'+ "1. current_corpus_file (This file should contain two columns separated by a \"|\", the first should sentences (orthography), and second should contain the corresponding phonetic transcription, for example \"Programe sua viagem|pp rd oo gg rd an mm ic ss uu ac vv ic aa zh en\", one sentence per line" + '\n' + "2. candidate_corpus_file (This file should contain two columns separated by a \"|\", the first should sentences (orthography), and second should contain the corresponding phonetic transcription, for example \"Programe sua viagem|pp rd oo gg rd an mm ic ss uu ac vv ic aa zh en\", one sentence per line" + '\n'+ "3. <tmp_folder_name>" +  '\n\n'
+
     if not help:
         current_corpus_file= var
         var1 = raw_input('\n' + "please enter the big corpus file or \"help\": " + '\n')
@@ -76,21 +77,21 @@ def reordena_hists():
     f = open('../hist_big_orig', 'r')
     lines_orig = f.readlines()
     f.close
-     
+
     f = open('tmp/hist_small_orig', 'r')
     lines_final = f.readlines()
     f.close
 
     f1 = open('tmp/hist_small_ord', 'w')
     f2 = open('tmp/saldo_small_ord', 'w')
-     
+
     dict_final = {}
     for line in lines_final:
         line = line.strip()
         partes = line.split('|')
         if len(partes) == 2:
             dict_final[partes[1]] = partes[0]
-     
+
     for line in lines_orig:
         line = line.strip()
         partes = line.split('|')
@@ -122,7 +123,7 @@ def get_percents_big():
 
         for line in lines:
             #print line
-            attribs = line.strip().split("|") 
+            attribs = line.strip().split("|")
             phones_percents_big_dict[attribs[1]] = float(attribs[0])
 
         values = []
@@ -142,7 +143,7 @@ def get_percents_small(qtd_rels_big):
     with open('tmp/hist_small_ord', 'r') as f:
         lines = f.readlines()
         for line in lines:
-            attribs = line.strip().split("|") 
+            attribs = line.strip().split("|")
             phones_rels_small_dict[attribs[1]] = float(attribs[0])
 
         cont = 0
@@ -160,13 +161,13 @@ def get_percents_small(qtd_rels_big):
         for line_1 in lines_1:
             line_1 = line_1.strip()
             saldo.append(line_1)
-            
+
     return current_weights, saldo
 
 
 def richest(weights, sentences):
     #print "sorting by richest sentences... "
-                                                                         
+
     with open('Files/current_corpus_file', 'a') as f1:
         if "excluded_sent" not in "\n".join(sentences[:1]):
             f1.write("\n".join(sentences[:1]) +'\n')
@@ -186,6 +187,9 @@ def richest(weights, sentences):
         f1.write("\n".join(sentences) + '\n')
 
 def processBalancing(current_corpus, big_corpus, automode):
+    signal.signal(signal.SIGINT, signal_handler)
+    global curCorpus
+    curCorpus = current_corpus
     global loop
     loop = 1
     if (automode == True):
@@ -206,21 +210,32 @@ def processBalancing(current_corpus, big_corpus, automode):
     copy_input(current_corpus, big_corpus)
     qtd_rels = get_percents_big()
     while loop < loop_parameter:
-        print "Iteration number: " + str(loop) + '\n'
-        print "time: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        triphones, triphones_sentences = order_triphones('Files/current_corpus_file')
-        make_orig_hists(triphones)
-        reordena_hists()
-        current_weights, saldo = get_percents_small(qtd_rels)
-        triphones, triphones_sentences = order_triphones('Files/candidate_corpus_file')
-        weights, sentences = internal_balancer.weight_sents(triphones_sentences, current_weights, saldo, automode)
-        richest(weights, sentences)
-        loop = loop +1
-        #print "time: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        try:
+            print "Iteration number: " + str(loop) + '\n'
+            print "time: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            triphones, triphones_sentences = order_triphones('Files/current_corpus_file')
+            make_orig_hists(triphones)
+            reordena_hists()
+            current_weights, saldo = get_percents_small(qtd_rels)
+            triphones, triphones_sentences = order_triphones('Files/candidate_corpus_file')
+            weights, sentences = internal_balancer.weight_sents(triphones_sentences, current_weights, saldo, automode)
+            richest(weights, sentences)
+            loop = loop +1
+            #print "time: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        except:
+            print "Abnormal behaviour..."
+            shutil.copy('Files/current_corpus_file' , '../' + curCorpus)
+            sys.exit(1)
+
     if loop == loop_parameter:
             #print "end time: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             print "exiting... "
-            exit
+            sys.exit(1)
+
+def signal_handler(signal, frame):
+    print "Exit with CTRL+C pressed!"
+    sys.exit(1)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='This is the Triphone Balancer.')
