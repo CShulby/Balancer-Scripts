@@ -38,11 +38,13 @@ def menu():
         candidate_corpus_file= var1
         print "exectuting verification process on " + current_corpus_file + " as current_corpus_file and " + candidate_corpus_file + " as candidate_corpus_file " + '\n'
 
-def copy_input(curCorpus,bigCorpus):
+def copy_input(curCorpus,bigCorpus,excludedSentencesFile):
     current_corpus_file = curCorpus
     candidate_corpus_file = bigCorpus
+    excluded_sentences_file = excludedSentencesFile
     shutil.copy('../' + current_corpus_file, 'Files/current_corpus_file')
     shutil.copy('../' + candidate_corpus_file, 'Files/candidate_corpus_file')
+    shutil.copy('../' + excluded_sentences_file, 'Files/excluded_sentences_file')
 
 def order_triphones(file_name):
     #print "grouping monophones to triphones in each sentence... "
@@ -168,11 +170,11 @@ def get_percents_small(qtd_rels_big):
 def richest(weights, sentences):
     #print "sorting by richest sentences... "
 
-    with open('Files/current_corpus_file', 'a') as f1:
+    with open('Files/current_corpus_file', 'a') as f1, open('Files/excluded_sentences_file', 'a') as f_x:
         if "excluded_sent" not in "\n".join(sentences[:1]):
             f1.write("\n".join(sentences[:1]) +'\n')
         else:
-            pass
+             f_x.write("\n".join(sentences[:1]) +'\n')
 
     with open('Files/new_corpus_file', 'a') as f1:
         if "excluded_sent" not in "\n".join(sentences[:1]):
@@ -188,8 +190,10 @@ def richest(weights, sentences):
 
 def processBalancing(current_corpus, big_corpus, automode):
     signal.signal(signal.SIGINT, signal_handler)
-    global curCorpus
-    curCorpus = current_corpus
+
+    global currentCorpus
+    currentCorpus = current_corpus
+
     global loop
     loop = 1
     if (automode == True):
@@ -201,13 +205,28 @@ def processBalancing(current_corpus, big_corpus, automode):
     #sys.argv[1:] = [current_corpus, big_corpus, foldername]
 
     current_path = os.path.dirname(os.path.abspath(sys.argv[0]))
+
+    current_corpus_path = current_corpus.split("/")
+    length_current_corpus_path = len(current_corpus_path)
+    excluded_sentences_file = ""
+    if (length_current_corpus_path == 1):
+        if not os.path.exists("./excluded_sentences_file"):
+            print "create excluded files"
+            os.mknod("./excluded_sentences_file")
+    else:
+        excluded_sentences_path = ''.join(current_corpus_path[:length_current_corpus_path-1])
+        excluded_sentences_file = excluded_sentences_path + "/excluded_sentences_file"
+        if not os.path.exists(excluded_sentences_file):
+            print "create excluded files"
+            os.mknod(excluded_sentences_file)
+
     temp_path = current_path+"/temp"
     if not os.path.exists(temp_path):
         os.makedirs(temp_path)
     os.chdir(temp_path)
     makedirs()
     #print "Iteration number: " + str(loop) + '\n'
-    copy_input(current_corpus, big_corpus)
+    copy_input(current_corpus, big_corpus, excluded_sentences_file)
     qtd_rels = get_percents_big()
     while loop < loop_parameter:
         try:
@@ -224,7 +243,8 @@ def processBalancing(current_corpus, big_corpus, automode):
             #print "time: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         except:
             print "Abnormal behaviour..."
-            shutil.copy('Files/current_corpus_file' , '../' + curCorpus)
+            shutil.copy('Files/current_corpus_file' , '../' + currentCorpus)
+            shutil.copy('Files/excluded_sentences_file' , '../' + excluded_sentences_file)
             sys.exit(1)
 
     if loop == loop_parameter:
