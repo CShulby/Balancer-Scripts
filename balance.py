@@ -196,6 +196,12 @@ def processBalancing(current_corpus, big_corpus, automode):
     currentCorpus = current_corpus
     candidateCorpus = big_corpus
 
+    if not os.path.exists(currentCorpus):
+        sys.exit("Error: " + currentCorpus + " file not found.")
+
+    if not os.path.exists(candidateCorpus):
+        sys.exit("Error: " + candidateCorpus + " file not found.")
+
     global loop
     loop = 1
     if (automode == True):
