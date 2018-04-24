@@ -215,6 +215,7 @@ def processBalancing(current_corpus, big_corpus, automode):
         if not os.path.exists("./excluded_sentences_file"):
             print "create excluded files"
             os.mknod("./excluded_sentences_file")
+        excluded_sentences_file="excluded_sentences_file"
     else:
         excluded_sentences_path = ''.join(current_corpus_path[:length_current_corpus_path-1])
         excluded_sentences_file = excluded_sentences_path + "/excluded_sentences_file"
