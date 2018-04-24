@@ -230,7 +230,7 @@ def processBalancing(current_corpus, big_corpus, automode):
     if loop == loop_parameter:
             #print "end time: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             print "exiting... "
-            sys.exit(1)
+            exit
 
 def signal_handler(signal, frame):
     print "Exit with CTRL+C pressed!"
