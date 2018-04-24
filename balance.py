@@ -174,7 +174,7 @@ def richest(weights, sentences):
         if "excluded_sent" not in "\n".join(sentences[:1]):
             f1.write("\n".join(sentences[:1]) +'\n')
         else:
-             f_x.write("\n".join(sentences[:1]) +'\n')
+            f_x.write("\n".join(sentences[:22]) +'\n')
 
     with open('Files/new_corpus_file', 'a') as f1:
         if "excluded_sent" not in "\n".join(sentences[:1]):
@@ -192,7 +192,9 @@ def processBalancing(current_corpus, big_corpus, automode):
     signal.signal(signal.SIGINT, signal_handler)
 
     global currentCorpus
+    global candidateCorpus
     currentCorpus = current_corpus
+    candidateCorpus = big_corpus
 
     global loop
     loop = 1
@@ -243,6 +245,7 @@ def processBalancing(current_corpus, big_corpus, automode):
             #print "time: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         except:
             print "Abnormal behaviour..."
+            shutil.copy('Files/candidate_corpus_file' , '../' + candidateCorpus)
             shutil.copy('Files/current_corpus_file' , '../' + currentCorpus)
             shutil.copy('Files/excluded_sentences_file' , '../' + excluded_sentences_file)
             sys.exit(1)
