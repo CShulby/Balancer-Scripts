@@ -13,6 +13,10 @@ import marisa_trie
 import time
 import math
 import argparse
+try:
+    import argcomplete
+except ImportError:
+    raise ImportError('argcomplete not found. Run sudo activate-global-python-argcomplete and open a new terminal to enable autocomplete')
 import signal
 
 def makedirs():
@@ -416,6 +420,7 @@ if __name__ == "__main__":
     parser.add_argument('--auto', dest='auto', help='Run in automatic mode', action='store_true')
     parser.add_argument('--no-auto',dest='auto',help='Run in manual mode (Default Mode)', action='store_false')
     parser.set_defaults(auto=False)
+    argcomplete.autocomplete(parser)
 
     if len(sys.argv[1:])==0:
         parser.print_help()
