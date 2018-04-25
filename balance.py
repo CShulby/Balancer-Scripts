@@ -252,11 +252,12 @@ def weight_sents(triphones_sentences, current_weights, saldo, isAutoMode):
 
         sents_to_print = '\n'.join(weighted_sents[:num_sents])
         count = 0
-        print '\n\n' + '-----------------------    -----------------------------------------' + '\n'
+        print '\n\n' + '----------------------------------------------------------------' + '\n'
+        print '  score    id     sentece'
         for h in range(0,num_sents):
-            print str(count).ljust(8) + str(weighted_sents[h].strip().split('|')[0]).ljust(20) + weighted_sents[h].strip().split('|')[1]
+            print "   " + str(round(float(weighted_sents[h].strip().split('|')[0]), 1)).ljust(3, "0") + str(count).rjust(7) + "    " + weighted_sents[h].strip().split('|')[1]
             count = count + 1
-        print '\n' + '-----------------------    -----------------------------------------' + '\n\n'
+        print '\n' + '----------------------------------------------------------------' + '\n\n'
         selected_sent = ''
         while not selected_sent.isdigit() or int(selected_sent) < 0 or int(selected_sent) >= num_sents:
             selected_sent = raw_input('\n' + "Please select a number of the sentence you would like to accept or exclude (0 to " + str(num_sents-1) + "): " + '\n')
