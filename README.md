@@ -57,14 +57,14 @@ The program can be run by the following command:
                           "Programe sua viagem|pp rd oo gg rd an mm ic ss uu ac
                           vv ic aa zh en", one sentence per line)
     -d CANDIDATE, --candidate CANDIDATE
-                              Candidate_corpus_file (This file should contain two
-                              columns separated by a "|", the first should sentences
-                              (orthography), and second should contain the
-                              corresponding phonetic transcription, for example
-                              "Programe sua viagem|pp rd oo gg rd an mm ic ss uu ac
-                              vv ic aa zh en", one sentence per line)
-    --auto                    Run in automatic mode
-    --no-auto                 Run in manual mode (Default Mode)
+                          Candidate_corpus_file (This file should contain two
+                          columns separated by a "|", the first should sentences
+                          (orthography), and second should contain the
+                          corresponding phonetic transcription, for example
+                          "Programe sua viagem|pp rd oo gg rd an mm ic ss uu ac
+                          vv ic aa zh en", one sentence per line)
+    --auto                Run in automatic mode
+    --no-auto             Run in manual mode (Default Mode)
 
 
 The program will then display the number of sentences in the corpus (some may be discarded if they have no statistical significance)
