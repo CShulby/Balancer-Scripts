@@ -115,6 +115,10 @@ def get_percents_big():
 
     #print "getting percentages of triphones from the original and final histograms... "
 
+    if not os.path.exists('../hist_big_orig'):
+        sys.exit("Error: ../hist_big_orig file not found.")
+
+
     with open('../hist_big_orig', 'r') as f:
 
         phones_percents_big_dict = {}
