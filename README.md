@@ -99,6 +99,8 @@ This program requires:
 
 1. python
 2. marisa trie which can be found at https://pypi.python.org/pypi/marisa-trie
+3. argparse
+4. argcomplete
 
 Module dependencies are summarized in requirements.txt
 
