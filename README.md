@@ -53,9 +53,9 @@ The program can be run by the following command:
                           Current_corpus_file (This file should contain two
                           columns separated by a "|", the first should sentences
                           (orthography), and second should contain the
-                        corresponding phonetic transcription, for example
-                        "Programe sua viagem|pp rd oo gg rd an mm ic ss uu ac
-                        vv ic aa zh en", one sentence per line)
+                          corresponding phonetic transcription, for example
+                          "Programe sua viagem|pp rd oo gg rd an mm ic ss uu ac
+                          vv ic aa zh en", one sentence per line)
     -d CANDIDATE, --candidate CANDIDATE
                               Candidate_corpus_file (This file should contain two
                               columns separated by a "|", the first should sentences
