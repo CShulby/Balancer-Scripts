@@ -103,5 +103,6 @@ This program requires:
 Module dependencies are summarized in requirements.txt
 
 Run:
+
     sudo pip install -r requirements.txt
     sudo activate-global-python-argcomplete # open a new terminal window and run balance.py
