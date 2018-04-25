@@ -2,10 +2,16 @@ Description
 ===========
 This is the Triphone Balancer built by Christopher Shulby for his PhD Thesis
 
-Original Date: 01/12/2014
+Original Date:
 
-Updated Date: 24/04/2018 (improvements)
-              25/05/2018 (improvements)
+    01/12/2014
+
+Updateds:
+
+    25/04/2018: - fix related to relative paths;
+    24/05/2018: - keep current_corpus_file / candidate_corpus_file records when script execution is aborted;
+                - created excluded_sentences_file to store sentences excluded;
+                - created a single script;
 
 
 Introduction
@@ -18,6 +24,7 @@ In order to balance sentences three seperate files are needed:
 3. a histogram of triphones from the large corpus
 
 all corpora must be given in the following format:
+
     "sentence to be balanced|## ss ee nn tt ee nn ss tt uu bb ii bb aa ll ae nn ss tt ##"
 
 * note that there can be no empty line and each line must have at least one triphone
@@ -25,6 +32,7 @@ if there is only one phone then sentence delimiters like '##' would be accepted.
 for example ## aa ## would be a valid triphone.
 
 The histogram must be structured in a similar way as well and given as:
+
     12|ss aw nn
     10|pp aw ll
      4|aw ll oo
@@ -34,6 +42,7 @@ The histogram must be structured in a similar way as well and given as:
 Use
 ---
 The program can be run by the following command:
+
     balance.py [-h] -c CURRENT -d CANDIDATE [--auto] [--no-auto]
 
     This is the Triphone Balancer.
