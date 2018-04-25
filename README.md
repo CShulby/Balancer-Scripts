@@ -6,7 +6,7 @@ Original Date:
 
     01/12/2014
 
-Updateds:
+Updates:
 
     25/04/2018: - fix related to relative paths;
     24/05/2018: - keep current_corpus_file / candidate_corpus_file records when script execution is aborted;
@@ -39,8 +39,8 @@ The histogram must be structured in a similar way as well and given as:
      2|nn aw nn
      1|## aa ##
 
-Use
----
+Usage
+-----
 The program can be run by the following command:
 
     balance.py [-h] -c CURRENT -d CANDIDATE [--auto] [--no-auto]
