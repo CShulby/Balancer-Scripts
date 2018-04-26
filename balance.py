@@ -16,7 +16,7 @@ import argparse
 try:
     import argcomplete
 except ImportError:
-    raise ImportError('argcomplete not found. Run sudo activate-global-python-argcomplete and open a new terminal to enable autocomplete')
+    raise ImportError('Module argcomplete not found. Run sudo pip install argcomplete. Then,  activate-global-python-argcomplete and open a new terminal to enable autocomplete')
 import signal
 
 def makedirs():
