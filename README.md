@@ -12,6 +12,7 @@ Updates:
     24/05/2018: - keep current_corpus_file / candidate_corpus_file records when script execution is aborted;
                 - created excluded_sentences_file to store sentences excluded;
                 - created a single script;
+    15/04/2019: - added a version for python 3.5
 
 
 Introduction
