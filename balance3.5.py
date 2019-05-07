@@ -53,7 +53,6 @@ def order_triphones(file_name):
     #print "grouping monophones to triphones in each sentence... "
     with open(file_name, "r") as corpus_file:
         lines = corpus_file.readlines()
-
     lines_phones = [line.split("|", 1)[1].strip() for line in lines]
     #triphones_sentences = [[phones[i:i+8] for i in range(0, len(phones) - 7, 3)] for phones in lines_phones]
     lines_phones_split=[phones.split() for phones in lines_phones]
@@ -278,20 +277,21 @@ def weight_sents(triphones_sentences, current_weights, saldo, isAutoMode):
             except AttributeError:
                 selected_sent_input = input('\n' + "Please select a number of the sentence you would like to accept or exclude (0 to " + str(num_sents-1) + "): " + '\n')
 
-        #selected_sent = int(selected_sent)
-        selected_sent = 0
+        selected_sent = int(selected_sent_input)
+        #selected_sent = 0
         valid = False
         while not valid:
             choice = input('\n' + "1) (a)ccept or 2) (e)xclude? " + '\n')
             if (choice in ['a', '1'] and len(selected_sent_list) == 1):
                 print("Sentence number " + str(selected_sent) + " accepted \n\n")
                 accepted_sent = str(weighted_sents[int(selected_sent)]).strip().split('|')[1]+"|"+str(weighted_sents[int(selected_sent)]).strip().split('|')[2]
-                #print ">>>>>>>>>>>>>>>>>>>>>>" + accepted_sent
+                #print (">>>>>>>>>>>>>>>>>>>>>>" + accepted_sent + "number: " + str(selected_sent))
                 sentences.append(accepted_sent)
                 added_weight = float(str(weighted_sents[int(selected_sent)]).strip().split('|')[0])
                 added_weights.append(added_weight)
                 for i in range(0,len(weighted_sents)):
                     if i != int(selected_sent):
+                        #print("here")
                         sent=weighted_sents[i].strip().split('|')[1] +"|"+weighted_sents[i].strip().split('|')[2]
                         sentences.append(sent)
                         added_weight = float(weighted_sents[i].strip().split('|')[0])
@@ -373,7 +373,7 @@ def processBalancing(current_corpus, big_corpus, automode):
     global loop
     loop = 1
     if (automode == True):
-        loop_parameter = 10001
+        loop_parameter = 100
     else:
         loop_parameter = 4001
     #print "start time: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
